@@ -13,12 +13,13 @@ on:
       BASE_PROJECT:
         description: 'Choose a base project:'
         required: true
-        default: 'LineageOS 21.0'
+        default: 'EvolutionX'
         type: choice
         options:
           - 'LineageOS 20.0'
           - 'LineageOS 21.0'
           - 'LineageOS 22.1'
+          - 'EvolutionX'
           - 'ArrowOS 13.1'
           - 'DerpFest 14.0'
           - 'CipherOS 14'
@@ -38,27 +39,27 @@ on:
       LOCAL_MANIFEST:
         description: "Personal local manifest [repository or raw]:"
         required: true
-        default: 'https://github.com/sounddrill31/local_manifests_oxygen'
+        default: 'https://github.com/skye-pa1n/evo_manifest/'
       LOCAL_MANIFEST_BRANCH:
         description: "Personal local manifest's branch:"
         required: false
-        default: 'lineage-21-qpr3'
+        default: 'r8q-vic'
       DEVICE_NAME:
         description: "Device's codename:"
         required: true
-        default: "oxygen"
+        default: "r8q"
       PRODUCT_NAME:
         description: "Product to build:"
         required: true
-        default: "oxygen"
+        default: "lineage_r8q"
       BUILD_COMMAND:
         description: 'Command to be used for compiling:'
         required: true
-        default: 'mka bacon'
+        default: 'm evolution'
       BUILD_TYPE:
         description: 'Type of build:'
         required: true
-        default: 'userdebug'
+        default: 'user'
         type: choice
         options: 
         - 'eng'
@@ -114,6 +115,11 @@ jobs:
           export PROJECTID="93"
           export REPO_INIT="repo init -u https://github.com/accupara/los22.git -b lineage-22.1 --git-lfs --depth=1"
         ;;
+        "EvolutionX")
+          export PROJECTFOLDER="/crave-devspaces/EvolutionX"
+          export PROJECTID="93"
+          export REPO_INIT="repo init --depth=1 -u https://github.com/Evolution-X/manifest.git -b vic --git-lfs"
+        ;;
         "LineageOS 20.0")
           export PROJECTFOLDER="/crave-devspaces/Lineage20"
           export PROJECTID="36"
@@ -156,22 +162,9 @@ jobs:
         ;;
         esac
 
-        if [[ ${{ github.event.inputs.PRODUCT_NAME }} == *_* ]] && [[ ${{ github.event.inputs.PRODUCT_NAME }} != gsi_* ]] && [[ ${{ github.event.inputs.PRODUCT_NAME }} != sdk_* ]] && [[ ${{ github.event.inputs.PRODUCT_NAME }} != *_sprout ]] && [[ ${{ github.event.inputs.PRODUCT_NAME }} != Mi439_* ]] && [[ ${{ github.event.inputs.PRODUCT_NAME }} != Mi8937_* ]]; then
-          LUNCH="lunch ${{ github.event.inputs.PRODUCT_NAME }}-${{ github.event.inputs.BUILD_TYPE }}"
-        elif [[ "${{ github.event.inputs.BASE_PROJECT }}" == "RisingOS 14" ]] && [[ "${{ github.event.inputs.BUILD_DIFFERENT_ROM }}" == "echo 'Build Starting!'" ]]; then
-            LUNCH="riseup ${{ github.event.inputs.PRODUCT_NAME }} ${{ github.event.inputs.BUILD_TYPE }}"
-        else
-            LUNCH="breakfast ${{ github.event.inputs.PRODUCT_NAME }} ${{ github.event.inputs.BUILD_TYPE }}"
-        fi
-
-
-          if [[ "${{ github.event.inputs.LOCAL_MANIFEST }}" =~ \.xml(/)?$ ]]; then
-            local_manifest_url="${{ github.event.inputs.LOCAL_MANIFEST }}"
-            export local_manifest_url="${local_manifest_url%/}"  # remove trailing slash if it exists
-            LOCAL_MANIFEST="mkdir -p .repo/local_manifests && rm -rf .repo/local_manifests/* || true && curl -o .repo/local_manifests/local_manifest.xml ${local_manifest_url}"
-          else
-            export LOCAL_MANIFEST="git clone ${{ github.event.inputs.LOCAL_MANIFEST }} --depth 1 -b ${{github.event.inputs.LOCAL_MANIFEST_BRANCH}} .repo/local_manifests"
-          fi
+          LUNCH="lunch lineage_r8q-ap4a-userdebug"
+          export LOCAL_MANIFEST="git clone https://github.com/skye-pa1n/evo_manifest.git --depth=1 -b r8q-vic .repo/local_manifests"
+      
 
         echo "Building on ${{ github.event.inputs.BASE_PROJECT }} project"
         echo "PROJECTFOLDER=$PROJECTFOLDER" >> "$GITHUB_OUTPUT"
