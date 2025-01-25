@@ -6,5 +6,5 @@
     "User-Agent": "Crave"
   },
   "projects": [],
-  "server": "https://foss.crave.io/api"
+  "server": "https://foss.crave.io"
 }
